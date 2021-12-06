@@ -6,7 +6,7 @@
             contain
             height="40"
             max-height="40"
-            :src="require('./assets/logo.png')"
+            :src="require('@/assets/logo.png')"
         ></v-img>
       </div>
       <v-app-bar-nav-icon>
@@ -14,7 +14,7 @@
             contain
             height="27"
             max-height="27"
-            :src="require('./assets/mobile-toggle-icon.png')"
+            :src="require('@/assets/mobile-toggle-icon.png')"
         ></v-img>
       </v-app-bar-nav-icon>
       <NavigationAvatar name="John Doe" class="d-flex justify-end w-full align-center"/>
