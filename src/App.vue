@@ -47,7 +47,7 @@
       </div>
     </v-navigation-drawer>
     <!-- Sizes your content based upon application components -->
-    <v-main>
+    <v-main class="pb-3">
 
       <!-- Provides the application the proper gutter -->
       <v-container fluid class="pt-9">
@@ -123,6 +123,7 @@ export default {
   height: 80px;
 }
 
+/* utility classes */
 .pr-100 {
   padding-right: 100px;
 }
