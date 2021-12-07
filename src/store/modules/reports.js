@@ -6,7 +6,10 @@ export const state = {
   projects: [],
   gateways: [],
   reportFilters: {},
-  reportResults: null
+  reportResults: [],
+  loadingReport: false,
+  reportList: {show: false, single: false, data: []},
+  reportChart: {show: false, data: {}}
 }
 
 export const mutations = {
@@ -20,7 +23,10 @@ export const mutations = {
     state.reportFilters = {...filters}
   },
   SET_REPORT_RESULTS(state, data) {
-    state.reportResults = {...data}
+    state.reportResults = [...data]
+  },
+  SET_LOADING_STATE(state, data) {
+    state.loadingReport = data
   }
 }
 
@@ -40,7 +46,6 @@ export const actions = {
   fetchGateways({commit}) {
     ReportService.getGateways()
       .then((res) => {
-        console.log(res)
         const gateways = res.data.data.map(g => {
           return {name: g.name, id: g.gatewayId}
         })
@@ -51,17 +56,17 @@ export const actions = {
       })
   },
   fetchReport({commit}, filters) {
+    commit('SET_LOADING_STATE', true)
     commit('SET_REPORT_FILTER', filters)
+    if (filters.projectId === 'all') filters.projectId = null
+    if (filters.gatewayId === 'all') filters.gatewayId = null
     ReportService.postReport(filters)
       .then(res => {
-        // checking if data is empty object we want to pass null to load ReportNoData comp
-        if (Object.keys(res.data.data).length === 0 ) {
-        commit('SET_REPORT_RESULTS', null)
-        } else {
         commit('SET_REPORT_RESULTS', res.data.data)
-        }
+        commit('SET_LOADING_STATE', false)
       })
       .catch(err => {
+        commit('SET_LOADING_STATE', false)
         throw Error(err.message)
       })
   }
@@ -74,7 +79,10 @@ export const getters = {
   getGatewayById: state => id => {
     return state.gateways.find(gateway => gateway.id === id)
   },
-  getReportResults: state => {
-    return state.reportResults
-  }
+  getReportListData: state => {
+    return state.reportList
+  },
+  getReportChartData: state => {
+    return state.reportChart
+  },
 }

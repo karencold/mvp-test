@@ -103,7 +103,7 @@ export default {
       return [{name: 'All projects', id: 'all'}, ...this.projects]
     },
     gatewaysForSelect() {
-      return [{name: 'All gateways', id: 'all'}, ...this.projects]
+      return [{name: 'All gateways', id: 'all'}, ...this.gateways]
     },
   },
   methods: {
@@ -118,11 +118,14 @@ export default {
       // if from date is later that to date
       if (new Date(this.dateFrom) > new Date(this.dateTo)) return this.$store.dispatch('notification/add',
           {type: 'warning', message: 'From date cannot be later that to date'})
+      // if project or gateway is not selected we want all to be selected as shown on design
+      if (this.selectedGateway === null) this.selectedGateway = 'all'
+      if (this.selectedProject === null) this.selectedProject = 'all'
       this.fetchReport({
         to: this.dateTo,
         from: this.dateFrom,
-        projectId: this.selectedProject === 'all' || null ? null : this.selectedProject,
-        gatewayId: this.selectedGateway === 'all' || null ? null : this.selectedGateway
+        projectId: this.selectedProject,
+        gatewayId: this.selectedGateway
       })
     }
   }
