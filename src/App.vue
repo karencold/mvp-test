@@ -1,5 +1,6 @@
 <template>
   <v-app class="pr-100">
+    <NotificationWrapper />
     <v-app-bar height="80" app class="pr-100" clipped-left>
       <div class="logo-wrapper">
         <v-img
@@ -78,11 +79,13 @@
 <script>
 import Report from "./views/Report";
 import NavigationAvatar from "./components/NavigationAvatar";
+import NotificationWrapper from "./components/shared/NotificationWrapper";
 
 export default {
   name: 'App',
 
   components: {
+    NotificationWrapper,
     NavigationAvatar,
     Report,
   },
@@ -138,6 +141,10 @@ export default {
 
 .gap-x-3 {
   column-gap: 6px;
+}
+
+.gap-x-6 {
+  column-gap: 24px;
 }
 
 .absolute {

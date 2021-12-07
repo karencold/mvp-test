@@ -20,6 +20,6 @@ export default {
     return apiClient.get('/gateways')
   },
   postReport(reportOptions) {
-    return apiClient.post('/report', reportOptions)
+    return apiClient.post('/report', JSON.stringify(reportOptions))
   }
 }

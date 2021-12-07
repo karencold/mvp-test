@@ -28,16 +28,23 @@ export const actions = {
   fetchProjects({commit}) {
     ReportService.getProjects()
       .then((res) => {
-        commit('SET_PROJECT', res.data)
+        const projects = res.data.data.map(p => {
+          return {name: p.name, id: p.projectId}
+        })
+        commit('SET_PROJECTS', projects)
       })
       .catch(err => {
         throw Error(err.message)
       })
   },
   fetchGateways({commit}) {
-    ReportService.getProjects()
+    ReportService.getGateways()
       .then((res) => {
-        commit('SET_GATEWAYS', res.data)
+        console.log(res)
+        const gateways = res.data.data.map(g => {
+          return {name: g.name, id: g.gatewayId}
+        })
+        commit('SET_GATEWAYS', gateways)
       })
       .catch(err => {
         throw Error(err.message)
@@ -47,7 +54,7 @@ export const actions = {
     commit('SET_REPORT_FILTER', filters)
     ReportService.postReport(filters)
       .then(res => {
-        commit('SET_REPORT_RESULTS', res.data)
+        commit('SET_REPORT_RESULTS', res.data.data)
       })
       .catch(err => {
         throw Error(err.message)
