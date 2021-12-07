@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="report-wrapper">
   <ReportNoData v-if="this.reportResults === null" />
   <div v-else>
     Result: {{this.reportResults}}

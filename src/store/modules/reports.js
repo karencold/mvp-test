@@ -6,7 +6,7 @@ export const state = {
   projects: [],
   gateways: [],
   reportFilters: {},
-  reportResults: {}
+  reportResults: null
 }
 
 export const mutations = {
@@ -54,7 +54,12 @@ export const actions = {
     commit('SET_REPORT_FILTER', filters)
     ReportService.postReport(filters)
       .then(res => {
+        // checking if data is empty object we want to pass null to load ReportNoData comp
+        if (Object.keys(res.data.data).length === 0 ) {
+        commit('SET_REPORT_RESULTS', null)
+        } else {
         commit('SET_REPORT_RESULTS', res.data.data)
+        }
       })
       .catch(err => {
         throw Error(err.message)
