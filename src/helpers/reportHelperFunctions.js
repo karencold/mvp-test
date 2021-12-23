@@ -192,7 +192,6 @@ const prepareArrayForListData = (mapList) => {
   return arrayFromMap
 }
 
-
 const prepareChartData = (state, getters, options) => {
   let idToSearch, idInnerData
   if (options.case === 'PROJECT_SELECTED') {

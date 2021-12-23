@@ -79,17 +79,7 @@ export const getters = {
   getGatewayById: state => id => {
     return state.gateways.find(gateway => gateway.id === id)
   },
-  /*
- {
- "paymentId": "6149cf567833e57669e60455",
- "amount": 2663.69,
- "projectId": "ERdPQ",
- "gatewayId": "i6ssp",
- "userIds": [ "rahej" ],
- "modified": "2021-09-20",
- "created": "2021-04-11"
- },
- */
+
   getReportData: (state, getters) => {
     const {projectId, gatewayId} = state.reportFilters
     // check what is the state of filters
