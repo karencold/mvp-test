@@ -1,4 +1,6 @@
-import ReportService from "../../services/ReportService"
+import ReportService from "@/services/ReportService"
+
+import {createReportChart, createReportList} from '@/helpers/reportHelperFunctions'
 
 export const namespaced = true
 
@@ -7,9 +9,7 @@ export const state = {
   gateways: [],
   reportFilters: {},
   reportResults: [],
-  loadingReport: false,
-  reportList: {show: false, single: false, data: []},
-  reportChart: {show: false, data: {}}
+  loadingReport: false
 }
 
 export const mutations = {
@@ -79,10 +79,64 @@ export const getters = {
   getGatewayById: state => id => {
     return state.gateways.find(gateway => gateway.id === id)
   },
-  getReportListData: state => {
-    return state.reportList
-  },
-  getReportChartData: state => {
-    return state.reportChart
-  },
+  /*
+ {
+ "paymentId": "6149cf567833e57669e60455",
+ "amount": 2663.69,
+ "projectId": "ERdPQ",
+ "gatewayId": "i6ssp",
+ "userIds": [ "rahej" ],
+ "modified": "2021-09-20",
+ "created": "2021-04-11"
+ },
+ */
+  getReportData: (state, getters) => {
+    const {projectId, gatewayId} = state.reportFilters
+    // check what is the state of filters
+    let reportState;
+    if (projectId === 'all' && gatewayId === 'all') reportState = 'ALL_SELECTED'
+    if (projectId !== 'all' && projectId && gatewayId !== 'all' && gatewayId) reportState = 'BOTH_SELECTED'
+    if (projectId !== 'all' && projectId && gatewayId === 'all') reportState = 'PROJECT_SELECTED'
+    if (projectId === 'all' && gatewayId !== 'all' && gatewayId) reportState = 'GATEWAY_SELECTED'
+
+    // if project of gateway is selected do preparation for displaying filter's selection
+    let selectedProject
+    let selectedGateway
+    if (projectId || gatewayId) {
+      selectedProject = getters.getProjectById(projectId)
+      selectedGateway = getters.getGatewayById(gatewayId)
+    }
+    switch (reportState) {
+      case 'ALL_SELECTED':
+        return {
+          reportFilter: {gateways: 'All gateways', projects: 'All projects'},
+          reportList: createReportList(state, getters, {case: 'ALL_SELECTED'}),
+          reportChart: null,
+        }
+      case 'PROJECT_SELECTED':
+        return {
+          reportFilter: {gateways: 'All gateways', projects: selectedProject.name},
+          reportList: createReportList(state, getters, {case: 'PROJECT_SELECTED', projectId: selectedProject.id}),
+          reportChart: createReportChart(state, getters, {case: 'PROJECT_SELECTED', projectId: selectedProject.id}),
+        }
+      case 'GATEWAY_SELECTED':
+        return {
+          reportFilter: {gateways: selectedGateway.name, projects: 'All projects'},
+          reportList: createReportList(state, getters, {case: 'GATEWAY_SELECTED', gatewayId: selectedGateway.id}),
+          reportChart: createReportChart(state, getters, {case: 'GATEWAY_SELECTED', gatewayId: selectedGateway.id}),
+        }
+      case 'BOTH_SELECTED':
+        return {
+          reportFilter: {gateways: selectedGateway.name, projects: selectedProject.name},
+          reportList: createReportList(state, getters, {
+            case: 'BOTH_SELECTED',
+            gatewayId: selectedGateway.id,
+            projectId: selectedProject.id
+          }),
+          reportChart: null,
+        }
+      default:
+        throw Error('check report store!')
+    }
+  }
 }
