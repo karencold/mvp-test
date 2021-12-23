@@ -1,22 +1,36 @@
 <template>
-  <div class="flex-grow-1 d-flex justify-end">
-    <div class="d-flex gap-x-6 align-center">
+  <!--  <div class="flex-grow-1 d-flex justify-end">-->
+  <v-row justify="end">
+    <v-col cols="2">
       <v-select
           :items="projectsForSelect"
           item-text="name"
           item-value="id"
           label="Select project"
           outlined
+          dense
+          single-line
+          dark
           v-model:item-value="selectedProject"
-      ></v-select>
+          :background-color="filterBG"
+      >
+      </v-select>
+    </v-col>
+    <v-col cols="2">
       <v-select
           :items="gatewaysForSelect"
           item-text="name"
           item-value="id"
           label="Select gateway"
           outlined
+          dense
+          single-line
+          dark
           v-model:item-value="selectedGateway"
+          :background-color="filterBG"
       ></v-select>
+    </v-col>
+    <v-col cols="2">
       <v-menu
           v-model="menuFrom"
           :close-on-content-click="false"
@@ -29,12 +43,17 @@
           <v-text-field
               v-model="dateFrom"
               label="From date"
-              prepend-icon="mdi-calendar"
+              append-icon="mdi-calendar"
               readonly
               v-bind="attrs"
               v-on="on"
               @click:clear="dateFrom = null"
               clearable
+              outlined
+              single-line
+              dense
+              dark
+              :background-color="filterBG"
           ></v-text-field>
         </template>
         <v-date-picker
@@ -42,6 +61,8 @@
             @input="menuFrom = false"
         ></v-date-picker>
       </v-menu>
+    </v-col>
+    <v-col cols="2">
       <v-menu
           v-model="menuTo"
           :close-on-content-click="false"
@@ -54,12 +75,17 @@
           <v-text-field
               v-model="dateTo"
               label="To date"
-              prepend-icon="mdi-calendar"
+              append-icon="mdi-calendar"
               readonly
               v-bind="attrs"
               v-on="on"
               @click:clear="dateTo = null"
               clearable
+              outlined
+              single-line
+              dense
+              dark
+              :background-color="filterBG"
           ></v-text-field>
         </template>
         <v-date-picker
@@ -67,16 +93,20 @@
             @input="menuTo = false"
         ></v-date-picker>
       </v-menu>
+    </v-col>
+    <v-col cols="2">
       <v-btn
           color="primary"
           @click="handleReportGenerate"
       >Generate report
       </v-btn>
-    </div>
-  </div>
+    </v-col>
+  </v-row>
+  <!--  </div>-->
 </template>
 <script>
 import {mapState, mapActions} from 'vuex'
+import {FILTERS_BG} from '@/globals/styles'
 
 export default {
   name: 'ReportFilters',
@@ -87,12 +117,17 @@ export default {
       menuFrom: false,
       menuTo: false,
       selectedProject: null,
-      selectedGateway: null
+      selectedGateway: null,
+      filterBG: null,
+      filterColor: null
     }
   },
   created() {
     this.fetchGateways()
     this.fetchProjects()
+  },
+  mounted() {
+    this.filterBG = FILTERS_BG
   },
   computed: {
     ...mapState({
@@ -118,7 +153,7 @@ export default {
       // if from date is later that to date
       if (new Date(this.dateFrom) > new Date(this.dateTo)) return this.$store.dispatch('notification/add',
           {type: 'warning', message: 'From date cannot be later that to date'})
-      // if project or gateway is not selected we want all to be selected as shown on design
+      // if project or gateway is not selected we want all to be selected as shown on design  
       if (this.selectedGateway === null) this.selectedGateway = 'all'
       if (this.selectedProject === null) this.selectedProject = 'all'
       this.fetchReport({
