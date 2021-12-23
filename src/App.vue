@@ -18,7 +18,7 @@
             :src="require('@/assets/mobile-toggle-icon.png')"
         ></v-img>
       </v-app-bar-nav-icon>
-      <NavigationAvatar name="John Doe" class="d-flex justify-end w-full align-center"/>
+      <NavigationAvatar :name="getUserFullName" class="d-flex justify-end w-full align-center"/>
     </v-app-bar>
     <v-navigation-drawer
         class="custom-drawer"
@@ -80,7 +80,7 @@
 import Report from "./views/Report";
 import NavigationAvatar from "./components/NavigationAvatar";
 import NotificationWrapper from "./components/shared/NotificationWrapper";
-
+import {mapGetters} from 'vuex';
 export default {
   name: 'App',
 
@@ -89,7 +89,9 @@ export default {
     NavigationAvatar,
     Report,
   },
-
+  computed: {
+    ...mapGetters(['user', 'getUserFullName'])
+  },
   data: () => ({
     navItems: [
       {
@@ -129,6 +131,9 @@ export default {
 /* utility classes */
 .pr-100 {
   padding-right: 100px;
+}
+.pt-100 {
+  padding-top: 100px;
 }
 
 .w-full {

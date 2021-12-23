@@ -7,3 +7,8 @@ export const state = {
     email: "john.doe@email.com"
   }
 }
+export const getters = {
+  getUserFullName: state => {
+    return state.user.firstName + ' ' + state.user.lastName
+  },
+}
